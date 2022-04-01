@@ -4,7 +4,7 @@ on:
     branches:
       - dev
 jobs:
-  git-tag:
+  git-tag-job:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
@@ -17,8 +17,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-    # outputs:
-    #   tag-version: ${{ steps.git-tag.outputs.new_tag }}
+    outputs:
+      new_tag: ${{ steps.git-tag.outputs.new_tag }}
+      tag: ${{ steps.git-tag.outputs.tag }}
+      part: ${{ steps.git-tag.outputs.part }}
+  print-check-tag-job:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Print check tag on another job
+        run: |
+          echo new_tag = ${{needs.git-tag-job.outputs.new_tag}}
+          echo tag = ${{needs.git-tag-job.outputs.tag}}
+          echo part = ${{needs.git-tag-job.outputs.part}}
   # docker-tag:
   #   needs: git-tag
   #   runs-on: ubuntu-20.04
