@@ -1,0 +1,37 @@
+name: dev-tagging
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  git-tag:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Git tagging
+        id: git-tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+    # outputs:
+    #   tag-version: ${{ steps.git-tag.outputs.new_tag }}
+  # docker-tag:
+  #   needs: git-tag
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Login to GitHub Container Registry
+  #       uses: docker/login-action@v1
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Pull and push tagged Docker Image
+  #       uses: akhilerm/tag-push-action@v1.0.0
+  #       with:
+  #         src: ghcr.io/tmpImg:latest
+  #         dst: |
+  #           ghcr.io/tmpImg:${{needs.git-tag.outputs.tag-version}}
