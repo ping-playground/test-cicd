@@ -22,6 +22,7 @@ jobs:
       tag: ${{ steps.git-tag.outputs.tag }}
       part: ${{ steps.git-tag.outputs.part }}
   print-check-tag-job:
+    needs: git-tag-job
     runs-on: ubuntu-20.04
     steps:
       - name: Print check tag on another job
