@@ -24,12 +24,16 @@ jobs:
   print-check-tag-job:
     needs: git-tag-job
     runs-on: ubuntu-20.04
+    env:
+      NEW_TAG: ${{ needs.git-tag-job.outputs.new_tag }}
+      TAG: ${{ needs.git-tag-job.outputs.tag }}
+      PART: ${{ needs.git-tag-job.outputs.part }}
     steps:
       - name: Print check tag on another job
         run: |
-          echo new_tag = ${{needs.git-tag-job.outputs.new_tag}}
-          echo tag = ${{needs.git-tag-job.outputs.tag}}
-          echo part = ${{needs.git-tag-job.outputs.part}}
+          echo "new_tag = ${NEW_TAG}"
+          echo "tag = $TAG"
+          echo "part = $PART"
   # docker-tag:
   #   needs: git-tag
   #   runs-on: ubuntu-20.04
