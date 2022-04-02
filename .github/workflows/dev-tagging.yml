@@ -34,6 +34,8 @@ jobs:
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
           echo "part = ${PART:-no_value}"
+          REAL_LATEST_TAG=$(git tag -l | tail -n 1)
+          echo "real_latest_tag = $REAL_LATEST_TAG"
   print-current-branch:
     needs: print-check-tag-job
     runs-on: ubuntu-20.04
