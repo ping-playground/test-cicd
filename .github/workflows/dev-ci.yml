@@ -39,7 +39,7 @@ jobs:
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
           echo "part = ${PART:-no_value}"
-          LATEST_BETA_TAG=$(git tag -l | grep beta | sort -t. -k4,4n | tail -n 1)
+          LATEST_BETA_TAG=$(git tag -l | grep beta | sort -V | tail -n 1)
           echo "real_latest_tag = $LATEST_BETA_TAG"
           echo ::set-output name=latest_beta_tag::"$LATEST_BETA_TAG"
     outputs:
