@@ -35,7 +35,7 @@ jobs:
           echo "tag = $TAG"
           echo "part = $PART"
   print-current-branch:
-    needs: print-current-branch
+    needs: print-check-tag-job
     runs-on: ubuntu-20.04
     steps:
       - name: Print current branch
