@@ -77,3 +77,22 @@ jobs:
           src: ghcr.io/ping-playground/test-cicd:latest
           dst: |
             ghcr.io/ping-playground/test-cicd:${{ needs.git-tag-job.outputs.latest_prod_tag }}
+    outputs:
+      # Forward 'From myself' tag to the next job 
+      latest_prod_tag: ${{ needs.git-tag-job.outputs.latest_prod_tag }}
+  deploy-job:
+    needs: docker-tag-job
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: 'ghcr.io/ping-playground/test-cd'
+          ref: main
+          ssh-key: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to prod server
+        run: |
+          DEPLOYING_VERSION="${{ needs.git-tag-job.outputs.latest_prod_tag }}"
+          echo "${DEPLOYING_VERSION}" > ./versions-to-deploy/test-cicd.txt
+          git add . && git commit -m "Deploy image version ${DEPLOYING_VERSION}"
+          git pull && git push
