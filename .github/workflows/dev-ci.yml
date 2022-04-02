@@ -53,6 +53,7 @@ jobs:
           git status
           git branch
   build-push:
+    needs: print-current-branch
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
