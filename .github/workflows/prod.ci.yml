@@ -50,7 +50,7 @@ jobs:
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
           echo "part = ${PART:-no_value}"
-          LATEST_PROD_TAG=$(git tag -l | grep -v beta | grep -v dev | sort -V | tail -n 1)
+          LATEST_PROD_TAG=$(git tag -l | grep -v "-" | sort -V | tail -n 1)
           echo "latest_prod_tag = $LATEST_PROD_TAG"
           echo ::set-output name=latest_prod_tag::"$LATEST_PROD_TAG"
     outputs:

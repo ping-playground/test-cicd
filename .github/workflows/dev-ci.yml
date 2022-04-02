@@ -23,7 +23,7 @@ jobs:
           context: .
           platforms: linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6
           push: true
-          tags: ghcr.io/ping-playground/test-cicd:latest
+          tags: ghcr.io/ping-playground/test-cicd:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
   git-tag-job:
@@ -40,6 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+          PRERELEASE_SUFFIX: dev
       - name: My tag check print
         id: tag-check-print
         env:
@@ -50,16 +51,16 @@ jobs:
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
           echo "part = ${PART:-no_value}"
-          LATEST_BETA_TAG=$(git tag -l | grep beta | sort -V | tail -n 1)
-          echo "real_latest_tag = $LATEST_BETA_TAG"
-          echo ::set-output name=latest_beta_tag::"$LATEST_BETA_TAG"
+          LATEST_DEV_TAG=$(git tag -l | grep dev | sort -V | tail -n 1)
+          echo "latest_dev_tag = $LATEST_DEV_TAG"
+          echo ::set-output name=latest_dev_tag::"$LATEST_DEV_TAG"
     outputs:
       # From github-tag-action
       new_tag: ${{ steps.git-tag.outputs.new_tag }}
       tag: ${{ steps.git-tag.outputs.tag }}
       part: ${{ steps.git-tag.outputs.part }}
       # From myself
-      latest_beta_tag: ${{ steps.tag-check-print.outputs.latest_beta_tag }}
+      latest_dev_tag: ${{ steps.tag-check-print.outputs.latest_dev_tag }}
   docker-tag-job:
     needs: git-tag-job
     runs-on: ubuntu-20.04
@@ -73,6 +74,6 @@ jobs:
       - name: Pull and push tagged Docker Image
         uses: akhilerm/tag-push-action@v2.0.0
         with:
-          src: ghcr.io/ping-playground/test-cicd:latest
+          src: ghcr.io/ping-playground/test-cicd:dev-latest
           dst: |
-            ghcr.io/ping-playground/test-cicd:${{ needs.git-tag-job.outputs.latest_beta_tag }}
+            ghcr.io/ping-playground/test-cicd:${{ needs.git-tag-job.outputs.latest_dev_tag }}
