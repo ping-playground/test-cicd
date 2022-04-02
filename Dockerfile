@@ -1,4 +1,4 @@
-FROM golang:1.18-alpine
+FROM golang:1.18-alpine as build-stage
 WORKDIR /app-build
 COPY go.mod ./
 #COPY go.sum ./
@@ -8,8 +8,8 @@ RUN go mod download
 COPY *.go ./
 RUN CGO_ENABLED=0 go build -o my-test-app
 
-FROM alpine:latest  
+FROM alpine:latest as run-stage
 RUN apk --no-cache add ca-certificates
 WORKDIR /app-bin/
-COPY --from=0 /app-build/my-test-app ./
+COPY --from=build-stage /app-build/my-test-app ./
 CMD ["./my-test-app"]  
