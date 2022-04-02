@@ -17,8 +17,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
-      - name: Print check tag on another job
-        id: print-check-tag
+      - name: My tag check print
+        env:
+          NEW_TAG: ${{ steps.git-tag.outputs.new_tag }}
+          TAG: ${{ steps.git-tag.outputs.tag }}
+          PART: ${{ steps.git-tag.outputs.part }}
         run: |
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
