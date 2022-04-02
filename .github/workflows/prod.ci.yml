@@ -94,7 +94,7 @@ jobs:
         run: |
           git config user.email "ci-user@ci-user.com"
           git config user.name "From CI"
-          DEPLOYING_VERSION="${{ needs.git-tag-job.outputs.latest_prod_tag }}"
+          DEPLOYING_VERSION="${{ needs.docker-tag-job.outputs.latest_prod_tag }}"
           echo "${DEPLOYING_VERSION}" > ./versions-to-deploy/test-cicd.txt
           git add . && git commit -m "Deploy image version ${DEPLOYING_VERSION}"
           git pull && git push
