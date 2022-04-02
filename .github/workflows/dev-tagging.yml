@@ -31,9 +31,9 @@ jobs:
     steps:
       - name: Print check tag on another job
         run: |
-          echo "new_tag = ${NEW_TAG}"
-          echo "tag = $TAG"
-          echo "part = $PART"
+          echo "new_tag = ${NEW_TAG:-no_value}"
+          echo "tag = $TAG:-no_value"
+          echo "part = $PART:-no_value"
   print-current-branch:
     needs: print-check-tag-job
     runs-on: ubuntu-20.04
