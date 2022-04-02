@@ -34,6 +34,15 @@ jobs:
           echo "new_tag = ${NEW_TAG}"
           echo "tag = $TAG"
           echo "part = $PART"
+  print-current-branch:
+    needs: print-current-branch
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Print current branch
+        run: |
+          git status
+          git branch
+
   # docker-tag:
   #   needs: git-tag
   #   runs-on: ubuntu-20.04
