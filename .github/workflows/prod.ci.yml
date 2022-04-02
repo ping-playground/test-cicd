@@ -89,7 +89,7 @@ jobs:
         with:
           repository: 'ping-playground/test-cd'
           ref: main
-          ssh-key: ${{ secrets.GITHUB_TOKEN }}
+          ssh-key: ${{ secrets.PROD_REPO_PRIVATE_DEPLOY_KEY }}
       - name: Deploy to prod server
         run: |
           DEPLOYING_VERSION="${{ needs.git-tag-job.outputs.latest_prod_tag }}"
