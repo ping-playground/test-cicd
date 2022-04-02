@@ -56,7 +56,7 @@ jobs:
         run: |
           git status
           git branch
-    outputs:  # Forward Helper
+    outputs:
       latest_beta_tag: ${{ needs.print-check-tag-job.outputs.latest_beta_tag }}
   build-push:
     needs: print-current-branch
@@ -80,7 +80,7 @@ jobs:
           tags: ghcr.io/ping-playground/test-cicd:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      outputs:  # Forward Helper
+      outputs:
         latest_beta_tag: ${{ needs.print-current-branch.outputs.latest_beta_tag }}
   docker-tag:
     needs: build-push
