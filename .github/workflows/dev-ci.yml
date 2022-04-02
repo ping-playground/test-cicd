@@ -1,4 +1,5 @@
 name: dev-ci
+concurrency: dev-ci
 on:
   push:
     branches:

@@ -1,4 +1,5 @@
 name: prod-ci
+concurrency: prod-ci
 on:
   push:
     branches:
