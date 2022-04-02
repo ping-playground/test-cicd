@@ -34,12 +34,16 @@ jobs:
         with:
           fetch-depth: '0'
       - name: Print check tag on another job
+        id: print-check-tag
         run: |
           echo "new_tag = ${NEW_TAG:-no_value}"
           echo "tag = ${TAG:-no_value}"
           echo "part = ${PART:-no_value}"
           LATEST_BETA_TAG=$(git tag -l | grep beta | tail -n 1)
           echo "real_latest_tag = $LATEST_BETA_TAG"
+          echo '::set-output name=latest_beta_tag::$LATEST_BETA_TAG'
+    outputs:
+      latest_beta_tag: ${{ steps.print-check-tag.outputs.latest_beta_tag }}
   print-current-branch:
     needs: print-check-tag-job
     runs-on: ubuntu-20.04
@@ -74,19 +78,19 @@ jobs:
           tags: ghcr.io/ping-playground/test-cicd:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  # docker-tag:
-  #   needs: git-tag
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Login to GitHub Container Registry
-  #       uses: docker/login-action@v1
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #     - name: Pull and push tagged Docker Image
-  #       uses: akhilerm/tag-push-action@v1.0.0
-  #       with:
-  #         src: ghcr.io/tmpImg:latest
-  #         dst: |
-  #           ghcr.io/tmpImg:${{needs.git-tag.outputs.tag-version}}
+  docker-tag:
+    needs: build-push
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull and push tagged Docker Image
+        uses: akhilerm/tag-push-action@v1.0.0
+        with:
+          src: ghcr.io/ping-playground/test-cicd:latest
+          dst: |
+            ghcr.io/ping-playground/test-cicd:${{ needs.print-check-tag-job.outputs.latest_beta_tag }}
