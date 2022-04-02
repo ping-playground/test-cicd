@@ -44,22 +44,8 @@ jobs:
           echo ::set-output name=latest_beta_tag::"$LATEST_BETA_TAG"
     outputs:
       latest_beta_tag: ${{ steps.print-check-tag.outputs.latest_beta_tag }}
-  print-current-branch:
+  build-push-job:
     needs: print-check-tag-job
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
-      - name: Print current branch
-        run: |
-          git status
-          git branch
-    outputs:  # Forward Helper
-      latest_beta_tag: ${{ needs.print-check-tag-job.outputs.latest_beta_tag }}
-  build-push:
-    needs: print-current-branch
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -81,9 +67,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
     outputs:  # Forward Helper
-      latest_beta_tag: ${{ needs.print-current-branch.outputs.latest_beta_tag }}
-  docker-tag:
-    needs: build-push
+      latest_beta_tag: ${{ needs.print-check-tag-job.outputs.latest_beta_tag }}
+  docker-tag-job:
+    needs: build-push-job
     runs-on: ubuntu-20.04
     steps:
       - name: Login to GitHub Container Registry
@@ -97,4 +83,4 @@ jobs:
         with:
           src: ghcr.io/ping-playground/test-cicd:latest
           dst: |
-            ghcr.io/ping-playground/test-cicd:${{ needs.build-push.outputs.latest_beta_tag }}
+            ghcr.io/ping-playground/test-cicd:${{ needs.build-push-job.outputs.latest_beta_tag }}
