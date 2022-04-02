@@ -18,6 +18,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
       - name: My tag check print
+        id: tag-check-print
         env:
           NEW_TAG: ${{ steps.git-tag.outputs.new_tag }}
           TAG: ${{ steps.git-tag.outputs.tag }}
@@ -35,7 +36,7 @@ jobs:
       tag: ${{ steps.git-tag.outputs.tag }}
       part: ${{ steps.git-tag.outputs.part }}
       # From myself
-      latest_beta_tag: ${{ steps.print-check-tag.outputs.latest_beta_tag }}
+      latest_beta_tag: ${{ steps.tag-check-print.outputs.latest_beta_tag }}
   build-push-job:
     needs: git-tag-job
     runs-on: ubuntu-20.04
